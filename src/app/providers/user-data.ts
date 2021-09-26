@@ -1,5 +1,7 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
+import { Alerts } from './alerts';
 
 
 @Injectable({
@@ -9,9 +11,12 @@ export class UserData {
   favorites: string[] = [];
   HAS_LOGGED_IN = 'hasLoggedIn';
   HAS_SEEN_TUTORIAL = 'hasSeenTutorial';
+  url = 'http://localhost:8000/api/'
 
   constructor(
-    public storage: Storage
+    public storage: Storage,
+    public http: HttpClient,
+    public alerts: Alerts
   ) { }
 
   hasFavorite(sessionName: string): boolean {
@@ -29,14 +34,23 @@ export class UserData {
     }
   }
 
-  login(username: string): Promise<any> {
-    return this.storage.set(this.HAS_LOGGED_IN, true).then(() => {
-      this.setUsername(username);
-      return window.dispatchEvent(new CustomEvent('user:login'));
-    });
+  login(userData: any) {
+    const login = this.http.post(this.url + 'login', userData)
+    login.subscribe((response: any) => {
+      if (response === null) {
+        this.alerts.presentToast()
+      } else {
+        if (response.length == 0) {
+          this.alerts.presentToast()
+        } else {
+          this.storage.set(this.HAS_LOGGED_IN, response)
+          location.reload()
+        }
+      }
+    })
   }
 
-  signup(username: string): Promise<any> {
+  signup(username): Promise<any> {
     return this.storage.set(this.HAS_LOGGED_IN, true).then(() => {
       this.setUsername(username);
       return window.dispatchEvent(new CustomEvent('user:signup'));

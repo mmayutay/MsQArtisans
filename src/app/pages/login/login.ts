@@ -16,21 +16,23 @@ import { Storage } from '@ionic/storage';
   styleUrls: ['./login.scss'],
 })
 export class LoginPage {
-  login: UserOptions = { username: '', password: '' };
+  login = { username: '', password: '' };
   submitted = false;
 
   constructor(
     public userData: UserData,
     public router: Router,
     public storage: Storage
-  ) { }
+  ) {
+
+  }
 
   onLogin(form: NgForm) {
     this.submitted = true;
 
     if (form.valid) {
-      this.userData.login(this.login.username);
-      this.router.navigateByUrl('/app/tabs/schedule');
+      this.userData.login(this.login);
+      // this.router.navigateByUrl('/app/tabs/schedule');
     }
   }
 

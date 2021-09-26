@@ -2,6 +2,7 @@
   <br><br><br><br><br>
   <div style="text-align: center;">
     <img src="assets/img/msqlogo.jfif" class="slide-image" />
+    We serve at your pleasure!
   </div><br><br><br>
 
   <form #loginForm="ngForm" novalidate>
@@ -21,6 +22,9 @@
       <button (click)="onLogin(loginForm)">Sign in</button>
       <div style="text-align: center;"><br>
         <a href="">Forgot your password?</a>
+      </div>
+      <div style="text-align: center;">
+        <p>Don't have account? <a routerLink="/signup">Sign Up</a> here!</p>
       </div>
     </div>
   </form>

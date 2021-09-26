@@ -32,12 +32,12 @@ export class AppComponent implements OnInit {
     {
       title: 'Finance',
       url: '/app/tabs/map',
-      icon: 'map'
+      icon: 'cash'
     },
     {
       title: 'Live Chat',
       url: '/app/tabs/about',
-      icon: 'information-circle'
+      icon: 'chatbubbles'
     }
   ];
   loggedIn = false;
@@ -126,7 +126,7 @@ export class AppComponent implements OnInit {
   logout() {
     this.userData.logout().then(() => {
       this.storage.clear()
-      return this.router.navigateByUrl('');
+      location.reload()
     });
   }
 
