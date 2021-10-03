@@ -49,10 +49,10 @@ export class SchedulePage implements OnInit {
       this.scheduleList.closeSlidingItems();
     }
 
-    this.confData.getTimeline(this.dayIndex, this.queryText, this.excludeTracks, this.segment).subscribe((data: any) => {
-      this.shownSessions = data.shownSessions;
-      this.groups = data.groups;
-    });
+    // this.confData.getTimeline(this.dayIndex, this.queryText, this.excludeTracks, this.segment).subscribe((data: any) => {
+    //   this.shownSessions = data.shownSessions;
+    //   this.groups = data.groups;
+    // });
   }
 
   async presentFilter() {

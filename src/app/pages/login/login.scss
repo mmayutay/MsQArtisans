@@ -22,6 +22,10 @@
   margin: 10px;
 }
 
+ion-item {
+  --ion-background-color: transparent;
+}
+
 button {
   width: 100%;
   background-color: #4a8af0; /* Green */
@@ -46,4 +50,23 @@ button {
 ion-icon {
   margin: 10px;
   margin-left: 0;
+}
+
+.loadingBody {
+  position: fixed;
+  z-index: 10;
+  background-color: rgba(192, 192, 192, 0.459);
+  height: 100%;
+  width: 100%;
+}
+
+.backgroundimage {
+  background-image: url("../../../assets/displayImages/background_mq.png");
+  background-size: cover;
+  height: 100%;
+}
+
+img {
+  width: 50%;
+  height: 50%;
 }

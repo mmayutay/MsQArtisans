@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { LoadingController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { Alerts } from './alerts';
 
@@ -11,16 +13,24 @@ export class UserData {
   favorites: string[] = [];
   HAS_LOGGED_IN = 'hasLoggedIn';
   HAS_SEEN_TUTORIAL = 'hasSeenTutorial';
-  url = 'http://localhost:8000/api/'
+  url = 'http://localhost:8000/api/';
+  loadingTrigger = false;
 
   constructor(
     public storage: Storage,
     public http: HttpClient,
-    public alerts: Alerts
+    public alerts: Alerts,
+    public router: Router,
+    public loadingController: LoadingController
   ) { }
 
-  hasFavorite(sessionName: string): boolean {
-    return (this.favorites.indexOf(sessionName) > -1);
+  hasFavorite(session: any) {
+    if (!this.favorites.includes(session.name)) {
+      this.favorites.push(session)
+      return true;
+    } else {
+      return false;
+    }
   }
 
   addFavorite(sessionName: string): void {
@@ -35,6 +45,7 @@ export class UserData {
   }
 
   login(userData: any) {
+    this.loadingTrigger = true
     const login = this.http.post(this.url + 'login', userData)
     login.subscribe((response: any) => {
       if (response === null) {
@@ -44,9 +55,10 @@ export class UserData {
           this.alerts.presentToast()
         } else {
           this.storage.set(this.HAS_LOGGED_IN, response)
-          location.reload()
+          this.router.navigate(['/app/tabs/schedule'])
         }
       }
+      this.loadingTrigger = false
     })
   }
 

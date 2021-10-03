@@ -10,83 +10,85 @@ import { UserData } from './user-data';
 })
 export class ConferenceData {
   data: any;
+  sampleData: any = [];
 
-  constructor(public http: HttpClient, public user: UserData) {}
+  constructor(public http: HttpClient, public user: UserData) {
+    this.getDatasForJobOrder()
+  }
 
   load(): any {
     if (this.data) {
       return of(this.data);
     } else {
       return this.http
-        .get('assets/data/data.json')
-        .pipe(map(this.processData, this));
+        .get('https://jsonplaceholder.typicode.com/users')
     }
   }
 
-  processData(data: any) {
-    // just some good 'ol JS fun with objects and arrays
-    // build up the data by linking speakers to sessions
-    this.data = data;
+  // processData(data: any) {
+  //   // just some good 'ol JS fun with objects and arrays
+  //   // build up the data by linking speakers to sessions
+  //   this.data = data;
 
-    // loop through each day in the schedule
-    this.data.schedule.forEach((day: any) => {
-      // loop through each timeline group in the day
-      day.groups.forEach((group: any) => {
-        // loop through each session in the timeline group
-        group.sessions.forEach((session: any) => {
-          session.speakers = [];
-          if (session.speakerNames) {
-            session.speakerNames.forEach((speakerName: any) => {
-              const speaker = this.data.speakers.find(
-                (s: any) => s.name === speakerName
-              );
-              if (speaker) {
-                session.speakers.push(speaker);
-                speaker.sessions = speaker.sessions || [];
-                speaker.sessions.push(session);
-              }
-            });
-          }
-        });
-      });
-    });
+  //   // loop through each day in the schedule
+  //   this.data.schedule.forEach((day: any) => {
+  //     // loop through each timeline group in the day
+  //     day.groups.forEach((group: any) => {
+  //       // loop through each session in the timeline group
+  //       group.sessions.forEach((session: any) => {
+  //         session.speakers = [];
+  //         if (session.speakerNames) {
+  //           session.speakerNames.forEach((speakerName: any) => {
+  //             const speaker = this.data.speakers.find(
+  //               (s: any) => s.name === speakerName
+  //             );
+  //             if (speaker) {
+  //               session.speakers.push(speaker);
+  //               speaker.sessions = speaker.sessions || [];
+  //               speaker.sessions.push(session);
+  //             }
+  //           });
+  //         }
+  //       });
+  //     });
+  //   });
 
-    return this.data;
-  }
+  //   return this.data;
+  // }
 
-  getTimeline(
-    dayIndex: number,
-    queryText = '',
-    excludeTracks: any[] = [],
-    segment = 'all'
-  ) {
-    return this.load().pipe(
-      map((data: any) => {
-        const day = data.schedule[dayIndex];
-        day.shownSessions = 0;
+  // getTimeline(
+  //   dayIndex: number,
+  //   queryText = '',
+  //   excludeTracks: any[] = [],
+  //   segment = 'all'
+  // ) {
+  //   return this.load().pipe(
+  //     map((data: any) => {
+  //       const day = data[dayIndex];
+  //       day.shownSessions = 0;
 
-        queryText = queryText.toLowerCase().replace(/,|\.|-/g, ' ');
-        const queryWords = queryText.split(' ').filter(w => !!w.trim().length);
+  //       queryText = queryText.toLowerCase().replace(/,|\.|-/g, ' ');
+  //       const queryWords = queryText.split(' ').filter(w => !!w.trim().length);
 
-        day.groups.forEach((group: any) => {
-          group.hide = true;
+  //       day.groups.forEach((group: any) => {
+  //         group.hide = true;
 
-          group.sessions.forEach((session: any) => {
-            // check if this session should show or not
-            this.filterSession(session, queryWords, excludeTracks, segment);
+  //         group.sessions.forEach((session: any) => {
+  //           // check if this session should show or not
+  //           this.filterSession(session, queryWords, excludeTracks, segment);
 
-            if (!session.hide) {
-              // if this session is not hidden then this group should show
-              group.hide = false;
-              day.shownSessions++;
-            }
-          });
-        });
+  //           if (!session.hide) {
+  //             // if this session is not hidden then this group should show
+  //             group.hide = false;
+  //             day.shownSessions++;
+  //           }
+  //         });
+  //       });
 
-        return day;
-      })
-    );
-  }
+  //       return day;
+  //     })
+  //   );
+  // }
 
   filterSession(
     session: any,
@@ -119,13 +121,13 @@ export class ConferenceData {
     // if the segment is 'favorites', but session is not a user favorite
     // then this session does not pass the segment test
     let matchesSegment = false;
-    if (segment === 'favorites') {
-      if (this.user.hasFavorite(session.name)) {
-        matchesSegment = true;
-      }
-    } else {
-      matchesSegment = true;
-    }
+    // if (segment === 'favorites') {
+    //   if (this.user.hasFavorite(session.name)) {
+    //     matchesSegment = true;
+    //   }
+    // } else {
+    //   matchesSegment = true;
+    // }
 
     // all tests must be true if it should not be hidden
     session.hide = !(matchesQueryText && matchesTracks && matchesSegment);
@@ -157,5 +159,13 @@ export class ConferenceData {
         return data.map;
       })
     );
+  }
+
+
+  getDatasForJobOrder() {
+    this.http.get("https://jsonplaceholder.typicode.com/users").subscribe((response: any) => {
+      console.log(response)
+      this.sampleData = response
+    })
   }
 }
