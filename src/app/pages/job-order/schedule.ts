@@ -44,6 +44,7 @@ export class SchedulePage implements OnInit {
   }
 
   updateSchedule() {
+    // Close any open sliding items when the schedule updates
     if (this.scheduleList) {
       this.scheduleList.closeSlidingItems();
     }
