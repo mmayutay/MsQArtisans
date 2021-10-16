@@ -14,6 +14,7 @@ export const allRoutes = {
   getSelectedJobOrder: route + 'getJobOrders/get/',
   getCustomersData: route + 'client/get-user-data/',
   addJobOrderToTracker: route + 'job-order-tracker/add',
+  updateJobOrderToTracker: route + 'job-order-tracker/update',
   getJobOrderToTracker: route + 'job-order-tracker/get-orders-on-track/',
 }
 

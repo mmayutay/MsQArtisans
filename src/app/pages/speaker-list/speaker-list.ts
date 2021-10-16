@@ -37,9 +37,20 @@ export class SpeakerListPage {
     })
   }
 
-  capitalizeFirstLetter(string) {
+  capitalizeFirstLetter(string, index) {
     if (string != undefined) {
-      return string.charAt(0).toUpperCase() + string.slice(1);
+      if (typeof string != 'number') {
+        return string[index].charAt(0).toUpperCase() + string[index].slice(1);
+      }
     }
+  }
+
+  markAsDone(data) {
+    this.confData.dataToPush.job_order = data.job_orders_id.id
+    this.confData.dataToPush.type = "TaskFinish"
+    this.confData.dataToPush["id"] = data.id
+    this.http.post(allRoutes.updateJobOrderToTracker, this.confData.dataToPush).subscribe((response: any) => {
+      console.log(response)
+    })
   }
 }

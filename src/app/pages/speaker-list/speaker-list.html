@@ -7,7 +7,7 @@
   </ion-toolbar>
   <ion-toolbar *ngIf="!ios">
     <ion-segment [value]="segment" (ionChange)="updateSchedule($event.target.value)">
-      <ion-segment-button value="Accepted">
+      <ion-segment-button value="TaskFinish">
         Accepted
       </ion-segment-button>
       <ion-segment-button value="OnGoing">
@@ -39,9 +39,9 @@
               </ion-avatar> -->
               <ion-label>
                 <h2>
-                  {{ capitalizeFirstLetter(speaker.job_orders_id.client_id.firstname) + ' ' +
-                  capitalizeFirstLetter(speaker.job_orders_id.client_id.middlename) + ' ' +
-                  capitalizeFirstLetter(speaker.job_orders_id.client_id.lastname)
+                  {{ capitalizeFirstLetter(speaker.job_orders_id.client_id, 'firstname') + ' ' +
+                  capitalizeFirstLetter(speaker.job_orders_id.client_id, 'middlename') + ' ' +
+                  capitalizeFirstLetter(speaker.job_orders_id.client_id, 'lastname')
                   }}
                 </h2>
                 <p>{{speaker.title}}</p>
@@ -58,9 +58,9 @@
                 </ion-label>
               </ion-item>
 
-              <ion-item detail="false" routerLink="/app/tabs/speakers/speaker-details/{{speaker.id}}">
+              <ion-item *ngIf="OnGoing">
                 <ion-label>
-                  <ion-button color="primary">Mark as Done</ion-button>
+                  <ion-button color="primary" (click)="markAsDone(speaker)">Mark as Done</ion-button>
                   <ion-button color="danger">Mark Rejected</ion-button>
                 </ion-label>
               </ion-item>
