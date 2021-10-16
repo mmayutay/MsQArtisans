@@ -2,18 +2,29 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
-
+import { allRoutes } from '../../environments/environment';
+import { Storage } from '@ionic/storage';
 import { UserData } from './user-data';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConferenceData {
+  dataToPush = {
+    artisan_id: 0,
+    job_order: 3,
+    type: "OnGoing"
+  }
   data: any;
   sampleData: any = [];
+  HAS_LOGGED_IN = 'hasLoggedIn';
 
-  constructor(public http: HttpClient, public user: UserData) {
-    this.getDatasForJobOrder()
+  constructor(
+    public http: HttpClient,
+    public user: UserData,
+    public storage: Storage
+  ) {
+    this.getDatasForJobOrder();
   }
 
   load(): any {
@@ -21,9 +32,16 @@ export class ConferenceData {
       return of(this.data);
     } else {
       return this.http
-        .get('https://jsonplaceholder.typicode.com/users')
+        .get(allRoutes.getAllJobOrders)
     }
   }
+
+  currentUser() {
+    this.storage.get(this.HAS_LOGGED_IN).then((response: any) => {
+      this.dataToPush.artisan_id = response[0].id
+    })
+  }
+
 
   // processData(data: any) {
   //   // just some good 'ol JS fun with objects and arrays
@@ -163,8 +181,13 @@ export class ConferenceData {
 
 
   getDatasForJobOrder() {
-    this.http.get("https://jsonplaceholder.typicode.com/users").subscribe((response: any) => {
-      console.log(response)
+    this.currentUser()
+    this.http.get(allRoutes.getAllJobOrders).subscribe((response: any) => {
+      response.forEach(element => {
+        this.http.get(allRoutes.getCustomersData + element.client_id).subscribe((res: any) => {
+          element.client_id = res
+        })
+      });
       this.sampleData = response
     })
   }

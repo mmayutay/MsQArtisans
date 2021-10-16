@@ -20,13 +20,15 @@
     <img src="../../../assets/img/speakers/mouse.jpg" alt="">
   </div>
   <div *ngIf="session" class="ion-padding">
-    <h1>{{session.name}}</h1>
-    <span *ngFor="let track of session?.tracks" [class]="'session-track-'+track.toLowerCase()">{{track}}</span>
-    <p>{{session.email}}</p>
-    <p>{{session.username}}</p>
+    <h1>{{ capitalizeFirstLetter(session.client_id.firstname) + ' ' +
+      capitalizeFirstLetter(session.client_id.middlename) + ' ' + capitalizeFirstLetter(session.client_id.lastname)
+      }}</h1>
+    <!-- <span *ngFor="let track of session?.tracks" [class]="'session-track-'+track.toLowerCase()">{{track}}</span> -->
+    <p>{{ session.client_id.address }}</p>
+    <p>{{session.phoneno}}</p>
+    <p>{{'P ' + session.quotedAmount.toLocaleString()}}</p>
     <ion-text color="medium">
-      {{session.zipcode}} {{session.street}} {{session.city}}
-      {{session.phone}}
+      {{session.date}}
     </ion-text>
   </div>
 
@@ -47,7 +49,7 @@
     <ion-item (click)="sessionClick('leave feedback')" button>
       <ion-label color="primary">Leave Feedback</ion-label>
     </ion-item> -->
-    <ion-button expand="block" color="primary">Accept Customer</ion-button>
+    <ion-button expand="block" color="primary" (click)="addJobOrderToTracker()">Accept Customer</ion-button>
     <ion-button expand="block" color="danger" routerLink="/app/tabs/schedule">Cancel</ion-button>
   </ion-list>
 </ion-content>

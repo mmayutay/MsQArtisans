@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 
 import { ConferenceData } from '../../providers/conference-data';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UserData } from '../../providers/user-data';
+import { HttpClient } from '@angular/common/http';
+import { allRoutes } from '../../../environments/environment';
 
 @Component({
   selector: 'page-session-detail',
@@ -17,36 +19,20 @@ export class SessionDetailPage {
   constructor(
     private dataProvider: ConferenceData,
     private userProvider: UserData,
-    private route: ActivatedRoute
+    private router: Router,
+    private route: ActivatedRoute,
+    private http: HttpClient
   ) { }
 
   ionViewWillEnter() {
     let id = this.route.snapshot.paramMap.get("sessionId");
-    for (let index = 0; index < this.dataProvider.sampleData.length; index++) {
-      if (this.dataProvider.sampleData[index].id === Number(id)) {
-        this.session = this.dataProvider.sampleData[index]
-      }
-    }
-    // this.dataProvider.load().subscribe((data: any) => {
-    //   if (data && data.schedule && data.schedule[0] && data.schedule[0].groups) {
-    //     const sessionId = this.route.snapshot.paramMap.get('sessionId');
-    //     for (const group of data.schedule[0].groups) {
-    //       if (group && group.sessions) {
-    //         for (const session of group.sessions) {
-    //           if (session && session.id === sessionId) {
-    //             this.session = session;
-
-    //             this.isFavorite = this.userProvider.hasFavorite(
-    //               this.session.name
-    //             );
-
-    //             break;
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    // });
+    this.http.get(allRoutes.getSelectedJobOrder + id).subscribe((response: any) => {
+      this.http.get(allRoutes.getCustomersData + response[0].client_id).subscribe((res: any) => {
+        response[0].client_id = res
+      })
+      this.session = response[0]
+      console.log(this.session)
+    })
   }
 
   ionViewDidEnter() {
@@ -69,5 +55,19 @@ export class SessionDetailPage {
 
   shareSession() {
     console.log('Clicked share session');
+  }
+
+  capitalizeFirstLetter(string) {
+    if (string != undefined) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+  }
+
+  addJobOrderToTracker() {
+    this.http.post(allRoutes.addJobOrderToTracker, this.dataProvider.dataToPush).subscribe((response: any) => {
+      if (response) {
+        this.router.navigate(['/app/tabs/schedule'])
+      }
+    })
   }
 }
