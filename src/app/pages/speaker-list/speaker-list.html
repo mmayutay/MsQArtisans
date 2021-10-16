@@ -3,14 +3,27 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Speakers</ion-title>
+    <ion-title>Tracker</ion-title>
+  </ion-toolbar>
+  <ion-toolbar *ngIf="!ios">
+    <ion-segment [value]="segment" (ionChange)="updateSchedule($event.target.value)">
+      <ion-segment-button value="Accepted">
+        Accepted
+      </ion-segment-button>
+      <ion-segment-button value="OnGoing">
+        On Going
+      </ion-segment-button>
+      <ion-segment-button value="Rejected">
+        Rejected
+      </ion-segment-button>
+    </ion-segment>
   </ion-toolbar>
 </ion-header>
 
 <ion-content fullscreen="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Speakers</ion-title>
+      <ion-title size="large">Tracker</ion-title>
     </ion-toolbar>
   </ion-header>
 
@@ -19,12 +32,18 @@
       <ion-col size="12" size-md="6" *ngFor="let speaker of speakers">
         <ion-card class="speaker-card">
           <ion-card-header>
-            <ion-item detail="false" lines="none" class="speaker-item" routerLink="/app/tabs/speakers/speaker-details/{{speaker.id}}">
-              <ion-avatar slot="start">
+            <ion-item detail="false" lines="none" class="speaker-item"
+              routerLink="/app/tabs/speakers/speaker-details/{{speaker.id}}">
+              <!-- <ion-avatar slot="start">
                 <img [src]="speaker.profilePic" [alt]="speaker.name + ' profile picture'">
-              </ion-avatar>
+              </ion-avatar> -->
               <ion-label>
-                <h2>{{speaker.name}}</h2>
+                <h2>
+                  {{ capitalizeFirstLetter(speaker.job_orders_id.client_id.firstname) + ' ' +
+                  capitalizeFirstLetter(speaker.job_orders_id.client_id.middlename) + ' ' +
+                  capitalizeFirstLetter(speaker.job_orders_id.client_id.lastname)
+                  }}
+                </h2>
                 <p>{{speaker.title}}</p>
               </ion-label>
             </ion-item>
@@ -32,7 +51,8 @@
 
           <ion-card-content>
             <ion-list lines="none">
-              <ion-item *ngFor="let session of speaker.sessions" detail="false" routerLink="/app/tabs/speakers/session/{{session.id}}">
+              <ion-item *ngFor="let session of speaker.sessions" detail="false"
+                routerLink="/app/tabs/speakers/session/{{session.id}}">
                 <ion-label>
                   <h3>{{session.name}}</h3>
                 </ion-label>
@@ -40,7 +60,8 @@
 
               <ion-item detail="false" routerLink="/app/tabs/speakers/speaker-details/{{speaker.id}}">
                 <ion-label>
-                  <h3>About {{speaker.name}}</h3>
+                  <ion-button color="primary">Mark as Done</ion-button>
+                  <ion-button color="danger">Mark Rejected</ion-button>
                 </ion-label>
               </ion-item>
             </ion-list>

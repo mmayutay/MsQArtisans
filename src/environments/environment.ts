@@ -6,6 +6,17 @@ export const environment = {
   production: false
 };
 
+export const route = 'http://localhost:8000/api/'
+
+
+export const allRoutes = {
+  getAllJobOrders: route + 'getJobOrders',
+  getSelectedJobOrder: route + 'getJobOrders/get/',
+  getCustomersData: route + 'client/get-user-data/',
+  addJobOrderToTracker: route + 'job-order-tracker/add',
+  getJobOrderToTracker: route + 'job-order-tracker/get-orders-on-track/',
+}
+
 /*
  * In development mode, to ignore zone related error stack frames such as
  * `zone.run`, `zoneDelegate.invokeTask` for easier debugging, you can

@@ -38,15 +38,22 @@ export class SchedulePage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.updateSchedule();
+    this.updateSchedule('all');
 
     this.ios = this.config.get('mode') === 'ios';
   }
 
-  updateSchedule() {
+  updateSchedule(params) {
+    let paramsClicked = '';
     // Close any open sliding items when the schedule updates
-    if (this.scheduleList) {
-      this.scheduleList.closeSlidingItems();
+    if (params === 'favorites') {
+      paramsClicked = 'selected'
+    }
+
+    if (paramsClicked === 'selected') {
+      this.confData.sampleData = this.user.favorites
+    } else {
+      this.confData.getDatasForJobOrder()
     }
 
     // this.confData.getTimeline(this.dayIndex, this.queryText, this.excludeTracks, this.segment).subscribe((data: any) => {
@@ -67,24 +74,25 @@ export class SchedulePage implements OnInit {
     const { data } = await modal.onWillDismiss();
     if (data) {
       this.excludeTracks = data;
-      this.updateSchedule();
+      this.updateSchedule('all');
     }
   }
 
   async addFavorite(slidingItem: HTMLIonItemSlidingElement, sessionData: any) {
-    if (this.user.hasFavorite(sessionData.name)) {
+    console.log(sessionData)
+    if (this.user.hasFavorite(sessionData)) {
       // Prompt to remove favorite
       this.removeFavorite(slidingItem, sessionData, 'Favorite already added');
     } else {
       // Add as a favorite
-      this.user.addFavorite(sessionData.name);
+      this.user.addFavorite(sessionData);
 
       // Close the open item
       slidingItem.close();
 
       // Create a toast
       const toast = await this.toastCtrl.create({
-        header: `${sessionData.name} was successfully added as a favorite.`,
+        header: `${this.capitalizeFirstLetter(sessionData.client_id.firstname)} was successfully added as a favorite.`,
         duration: 3000,
         buttons: [{
           text: 'Close',
@@ -115,8 +123,7 @@ export class SchedulePage implements OnInit {
           text: 'Remove',
           handler: () => {
             // they want to remove this session from their favorites
-            this.user.removeFavorite(sessionData.name);
-            this.updateSchedule();
+            this.user.removeFavorite(sessionData);
 
             // close the sliding item and hide the option buttons
             slidingItem.close();
@@ -136,5 +143,11 @@ export class SchedulePage implements OnInit {
     await loading.present();
     await loading.onWillDismiss();
     fab.close();
+  }
+
+  capitalizeFirstLetter(string) {
+    if (string != undefined) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
   }
 }

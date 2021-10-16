@@ -25,19 +25,21 @@ export class UserData {
   ) { }
 
   hasFavorite(session: any) {
-    if (!this.favorites.includes(session.name)) {
-      this.favorites.push(session)
-      return true;
-    } else {
-      return false;
-    }
+    return this.favorites.includes(session);
+    // if (!this.favorites.includes(session)) {
+    //   this.favorites.push(session)
+    //   return false;
+    // } else {
+    //   return true;
+    // }
   }
 
   addFavorite(sessionName: string): void {
+    console.log(sessionName)
     this.favorites.push(sessionName);
   }
 
-  removeFavorite(sessionName: string): void {
+  removeFavorite(sessionName: string) {
     const index = this.favorites.indexOf(sessionName);
     if (index > -1) {
       this.favorites.splice(index, 1);
