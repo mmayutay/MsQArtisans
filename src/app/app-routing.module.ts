@@ -32,7 +32,11 @@ const routes: Routes = [
     path: 'tutorial',
     loadChildren: () => import('./pages/tutorial/tutorial.module').then(m => m.TutorialModule),
     canLoad: [CheckTutorial]
+  },  {
+    path: 'chat-page',
+    loadChildren: () => import('./pages/chat-page/chat-page.module').then( m => m.ChatPagePageModule)
   }
+
 ];
 
 @NgModule({
